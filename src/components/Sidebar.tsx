@@ -7,9 +7,9 @@ interface SidebarProps {
   onToggle: () => void;
 }
 
-const menuItems: { id: ViewMode; label: string; icon: string }[] = [
+const menuItems: { id: ViewMode; label: string; icon: string; badge?: string }[] = [
   { id: 'dashboard', label: 'Dashboard', icon: 'fa-chart-line' },
-  { id: 'upload', label: 'Subir Proceso', icon: 'fa-camera' },
+  { id: 'upload', label: 'Subir Proceso', icon: 'fa-camera', badge: '📷' },
   { id: 'editor', label: 'Editor BPMN', icon: 'fa-diagram-project' },
   { id: 'comparison', label: 'AS-IS vs TO-BE', icon: 'fa-code-compare' },
   { id: 'analysis', label: 'Análisis', icon: 'fa-magnifying-glass-chart' },
@@ -22,10 +22,13 @@ export default function Sidebar({ currentView, onViewChange, isOpen, onToggle }:
       <div className="flex items-center justify-between p-4 border-b border-slate-700">
         {isOpen && (
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/30">
               <i className="fas fa-diagram-project text-white text-sm"></i>
             </div>
-            <span className="font-bold text-sm">ProcessFlow</span>
+            <div>
+              <span className="font-bold text-sm block leading-tight">ProcessFlow</span>
+              <span className="text-[10px] text-slate-400">BPMN Analyzer</span>
+            </div>
           </div>
         )}
         <button 
@@ -49,20 +52,43 @@ export default function Sidebar({ currentView, onViewChange, isOpen, onToggle }:
             title={!isOpen ? item.label : undefined}
           >
             <i className={`fas ${item.icon} w-5 text-center`}></i>
-            {isOpen && <span className="text-sm font-medium">{item.label}</span>}
+            {isOpen && (
+              <>
+                <span className="text-sm font-medium flex-1 text-left">{item.label}</span>
+                {item.badge && <span className="text-xs">{item.badge}</span>}
+              </>
+            )}
           </button>
         ))}
       </nav>
 
+      {/* Quick Stats */}
       {isOpen && (
-        <div className="absolute bottom-4 left-4 right-4 p-3 bg-slate-700/50 rounded-lg">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-            <span className="text-xs text-slate-300">Sistema Activo</span>
+        <div className="absolute bottom-4 left-4 right-4">
+          <div className="p-3 bg-slate-700/50 rounded-lg mb-3">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              <span className="text-xs text-slate-300">Sistema Activo</span>
+            </div>
+            <div className="grid grid-cols-2 gap-2 text-center">
+              <div className="bg-slate-800/50 rounded p-1.5">
+                <p className="text-xs font-bold text-white">12</p>
+                <p className="text-[10px] text-slate-400">Procesos</p>
+              </div>
+              <div className="bg-slate-800/50 rounded p-1.5">
+                <p className="text-xs font-bold text-orange-400">N0</p>
+                <p className="text-[10px] text-slate-400">Madurez</p>
+              </div>
+            </div>
           </div>
-          <p className="text-xs text-slate-400">
-            12 procesos en análisis • Nivel 0→4
-          </p>
+          <div className="p-3 bg-gradient-to-r from-blue-900/50 to-purple-900/50 rounded-lg border border-blue-800/30">
+            <p className="text-xs text-blue-300 font-medium mb-1">
+              <i className="fas fa-rocket mr-1"></i> Plan Aceleración
+            </p>
+            <p className="text-[10px] text-slate-400">
+              N0 → N4 en 4 fases • 2026-2027
+            </p>
+          </div>
         </div>
       )}
     </aside>

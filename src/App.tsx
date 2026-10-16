@@ -47,7 +47,9 @@ function App() {
       case 'comparison':
         return (
           <ProcessComparison 
-            process={selectedProcess || processes[0]} 
+            process={selectedProcess || processes[0]}
+            processes={processes}
+            onSelectProcess={setSelectedProcess}
           />
         );
       case 'analysis':

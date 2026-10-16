@@ -16,6 +16,8 @@ export default function AnalysisPanel({ processes }: AnalysisPanelProps) {
     { process: 'Carga de ATM', activity: 'Elaboración de plan de carga', delay: 60, impact: 'medium' },
     { process: 'Gestión de Resguardos', activity: 'Elaboración manual HPIE', delay: 35, impact: 'medium' },
     { process: 'Recepción de Remesas', activity: 'Doble digitación SAT', delay: 25, impact: 'medium' },
+    { process: 'Traslado Inter-Sucursal', activity: 'Documentación física', delay: 55, impact: 'high' },
+    { process: 'Gestión de Excepciones', activity: 'Resolución manual diferencias', delay: 40, impact: 'high' },
   ];
 
   const recommendations = [
@@ -25,7 +27,8 @@ export default function AnalysisPanel({ processes }: AnalysisPanelProps) {
       description: 'Implementar captura única en SAT como fuente de verdad. Eliminar hojas Excel locales.',
       impact: 'Reducción de 70% en errores de transcripción',
       effort: 'Medio',
-      timeline: '60 días'
+      timeline: '60 días',
+      level: 'Nivel 1'
     },
     {
       priority: 2,
@@ -33,7 +36,8 @@ export default function AnalysisPanel({ processes }: AnalysisPanelProps) {
       description: 'Reemplazar Hojas de Pase Interno en papel con firma electrónica y trazabilidad digital.',
       impact: 'Eliminación de 23,000 hojas/mes',
       effort: 'Medio',
-      timeline: '90 días'
+      timeline: '90 días',
+      level: 'Nivel 2'
     },
     {
       priority: 3,
@@ -41,7 +45,8 @@ export default function AnalysisPanel({ processes }: AnalysisPanelProps) {
       description: 'Implementar reglas DMN para validación automática de bolsas recibidas vs esperadas.',
       impact: 'Reducción de 80% en excepciones',
       effort: 'Alto',
-      timeline: '120 días'
+      timeline: '120 días',
+      level: 'Nivel 2'
     },
     {
       priority: 4,
@@ -49,7 +54,17 @@ export default function AnalysisPanel({ processes }: AnalysisPanelProps) {
       description: 'Conectar hardware de conteo inteligente directamente con SAT para captura automática.',
       impact: 'Eliminación de conteo manual',
       effort: 'Alto',
-      timeline: '180 días'
+      timeline: '180 días',
+      level: 'Nivel 3'
+    },
+    {
+      priority: 5,
+      title: 'Detección de anomalías con IA',
+      description: 'Implementar modelos de ML para detectar patrones anómalos en operaciones de bóveda.',
+      impact: 'Reducción de 90% en incidentes',
+      effort: 'Muy Alto',
+      timeline: '240 días',
+      level: 'Nivel 4'
     },
   ];
 
@@ -107,8 +122,9 @@ export default function AnalysisPanel({ processes }: AnalysisPanelProps) {
               <i className="fas fa-bolt text-amber-500"></i>
               Cuellos de Botella Detectados
             </h2>
+            <p className="text-xs text-slate-400 mt-1">Actividades que generan mayor retraso en el flujo</p>
           </div>
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-slate-100 max-h-96 overflow-y-auto">
             {bottlenecks.map((bn, i) => (
               <div key={i} className="p-4 hover:bg-slate-50">
                 <div className="flex items-center justify-between">
@@ -138,8 +154,9 @@ export default function AnalysisPanel({ processes }: AnalysisPanelProps) {
               <i className="fas fa-lightbulb text-blue-500"></i>
               Recomendaciones Priorizadas
             </h2>
+            <p className="text-xs text-slate-400 mt-1">Acciones ordenadas por impacto y esfuerzo</p>
           </div>
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-slate-100 max-h-96 overflow-y-auto">
             {recommendations.map((rec) => (
               <div key={rec.priority} className="p-4 hover:bg-slate-50">
                 <div className="flex items-start gap-3">
@@ -149,17 +166,20 @@ export default function AnalysisPanel({ processes }: AnalysisPanelProps) {
                   <div className="flex-1">
                     <h4 className="font-medium text-sm text-slate-700">{rec.title}</h4>
                     <p className="text-xs text-slate-500 mt-1">{rec.description}</p>
-                    <div className="flex items-center gap-3 mt-2">
+                    <div className="flex items-center gap-2 mt-2 flex-wrap">
                       <span className="text-xs text-green-600 bg-green-50 px-2 py-0.5 rounded">
                         {rec.impact}
+                      </span>
+                      <span className="text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
+                        {rec.level}
                       </span>
                       <span className="text-xs text-slate-400">
                         <i className="fas fa-calendar mr-1"></i>{rec.timeline}
                       </span>
                       <span className={`text-xs px-2 py-0.5 rounded ${
-                        rec.effort === 'Alto' ? 'bg-red-50 text-red-600' : 'bg-amber-50 text-amber-600'
+                        rec.effort === 'Alto' || rec.effort === 'Muy Alto' ? 'bg-red-50 text-red-600' : 'bg-amber-50 text-amber-600'
                       }`}>
-                        Esfuerzo: {rec.effort}
+                        {rec.effort}
                       </span>
                     </div>
                   </div>
@@ -185,7 +205,7 @@ export default function AnalysisPanel({ processes }: AnalysisPanelProps) {
                 <th className="text-center py-2 px-3 text-slate-500 font-medium">Papel</th>
                 <th className="text-center py-2 px-3 text-slate-500 font-medium">Doble Entrada</th>
                 <th className="text-center py-2 px-3 text-slate-500 font-medium">Excepciones</th>
-                <th className="text-center py-2 px-3 text-slate-500 font-medium">Riesgo</th>
+                <th className="text-center py-2 px-3 text-slate-500 font-medium">Modelo</th>
               </tr>
             </thead>
             <tbody>
@@ -207,7 +227,7 @@ export default function AnalysisPanel({ processes }: AnalysisPanelProps) {
                       p.metrics.paperDocuments > 4 ? 'bg-amber-100 text-amber-700' :
                       'bg-green-100 text-green-700'
                     }`}>
-                      {p.metrics.paperDocuments} docs
+                      {p.metrics.paperDocuments}
                     </span>
                   </td>
                   <td className="py-3 px-3 text-center">
@@ -216,32 +236,86 @@ export default function AnalysisPanel({ processes }: AnalysisPanelProps) {
                       p.metrics.doubleEntryPoints > 1 ? 'bg-amber-100 text-amber-700' :
                       'bg-green-100 text-green-700'
                     }`}>
-                      {p.metrics.doubleEntryPoints} pts
+                      {p.metrics.doubleEntryPoints}
                     </span>
                   </td>
                   <td className="py-3 px-3 text-center">
                     <span className={`px-2 py-1 rounded text-xs font-medium ${
-                      p.metrics.exceptionRate > 25 ? 'bg-red-100 text-red-700' :
-                      p.metrics.exceptionRate > 15 ? 'bg-amber-100 text-amber-700' :
+                      p.metrics.exceptionRate > 20 ? 'bg-red-100 text-red-700' :
+                      p.metrics.exceptionRate > 10 ? 'bg-amber-100 text-amber-700' :
                       'bg-green-100 text-green-700'
                     }`}>
                       {p.metrics.exceptionRate}%
                     </span>
                   </td>
                   <td className="py-3 px-3 text-center">
-                    <span className={`px-2 py-1 rounded text-xs font-medium ${
-                      p.metrics.exceptionRate > 25 || p.metrics.paperDocuments > 8 ? 'bg-red-100 text-red-700' :
-                      p.metrics.exceptionRate > 15 ? 'bg-amber-100 text-amber-700' :
-                      'bg-green-100 text-green-700'
-                    }`}>
-                      {p.metrics.exceptionRate > 25 || p.metrics.paperDocuments > 8 ? 'ALTO' :
-                       p.metrics.exceptionRate > 15 ? 'MEDIO' : 'BAJO'}
-                    </span>
+                    <div className="flex items-center justify-center gap-1">
+                      {p.asIsModel && <span className="w-3 h-3 bg-orange-400 rounded-full" title="AS-IS"></span>}
+                      {p.toBeModel && <span className="w-3 h-3 bg-green-400 rounded-full" title="TO-BE"></span>}
+                      {!p.asIsModel && !p.toBeModel && <span className="text-xs text-slate-400">—</span>}
+                    </div>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+        </div>
+      </div>
+
+      {/* Risk Matrix */}
+      <div className="mt-6 bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+        <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+          <i className="fas fa-shield-alt text-red-500"></i>
+          Matriz de Riesgo Operativo
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <h4 className="text-sm font-medium text-slate-600 mb-3">Riesgos Identificados</h4>
+            <div className="space-y-2">
+              {[
+                { risk: 'Faltantes en bóveda sin trazabilidad', severity: 'Crítico', probability: 'Alta' },
+                { risk: 'Duplicación de cargas bancarias', severity: 'Alto', probability: 'Media' },
+                { risk: 'Abandono de valores en esclusa', severity: 'Crítico', probability: 'Baja' },
+                { risk: 'Remesas incompletas sin registro', severity: 'Alto', probability: 'Alta' },
+                { risk: 'Errores de transcripción manual', severity: 'Medio', probability: 'Alta' },
+              ].map((r, i) => (
+                <div key={i} className="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
+                  <div className="flex items-center gap-2">
+                    <span className={`w-2 h-2 rounded-full ${
+                      r.severity === 'Crítico' ? 'bg-red-500' : r.severity === 'Alto' ? 'bg-orange-500' : 'bg-amber-500'
+                    }`}></span>
+                    <span className="text-sm text-slate-700">{r.risk}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className={`text-xs px-2 py-0.5 rounded ${
+                      r.severity === 'Crítico' ? 'bg-red-100 text-red-700' : 'bg-orange-100 text-orange-700'
+                    }`}>{r.severity}</span>
+                    <span className="text-xs text-slate-400">{r.probability}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div>
+            <h4 className="text-sm font-medium text-slate-600 mb-3">Controles Propuestos</h4>
+            <div className="space-y-2">
+              {[
+                { control: 'Trazabilidad digital con UUID por sesión', level: 'Nivel 1' },
+                { control: 'Validación automática de archivos de entrada', level: 'Nivel 2' },
+                { control: 'Sensores IoT en esclusas de bóveda', level: 'Nivel 3' },
+                { control: 'Reglas DMN para remesas completas', level: 'Nivel 2' },
+                { control: 'Captura única sin transcripción', level: 'Nivel 1' },
+              ].map((c, i) => (
+                <div key={i} className="flex items-center justify-between p-2 bg-green-50 rounded-lg">
+                  <div className="flex items-center gap-2">
+                    <i className="fas fa-shield-alt text-green-500 text-xs"></i>
+                    <span className="text-sm text-slate-700">{c.control}</span>
+                  </div>
+                  <span className="text-xs px-2 py-0.5 rounded bg-blue-100 text-blue-700">{c.level}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
